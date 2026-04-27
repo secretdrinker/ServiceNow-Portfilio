@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krishna Teja Chippada — ServiceNow Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a26;
+    --accent: #7c6aff;
+    --accent2: #ff6a6a;
+    --accent3: #6affd4;
+    --text: #e8e8f0;
+    --muted: #6b6b85;
+    --border: rgba(124,106,255,0.15);
+    --glow: 0 0 40px rgba(124,106,255,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.4;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* Grid background */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124,106,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,106,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,15,0.8);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+
+  .nav-logo span { color: var(--accent3); }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent3); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 60px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(124,106,255,0.1);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent3);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(48px, 5vw, 72px);
+    line-height: 1.05;
+    letter-spacing: -2px;
+    color: var(--text);
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero-name .highlight {
+    color: var(--accent);
+    display: block;
+  }
+
+  .hero-title {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--accent3);
+    margin: 16px 0 24px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-desc {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 480px;
+    line-height: 1.8;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    margin-top: 40px;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: #9b8dff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(124,106,255,0.4);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .btn-outline:hover {
+    color: var(--accent3);
+    border-color: var(--accent3);
+    transform: translateY(-2px);
+  }
+
+  /* Hero visual */
+  .hero-visual {
+    position: relative;
+    animation: fadeUp 0.6s 0.5s ease both;
+  }
+
+  .hero-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--glow);
+  }
+
+  .hero-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+  }
+
+  .code-line {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .line-num {
+    color: var(--muted);
+    font-size: 12px;
+    min-width: 20px;
+    opacity: 0.4;
+  }
+
+  .code-text { font-size: 13px; line-height: 1.6; }
+
+  .k { color: #ff6a9b; }
+  .s { color: var(--accent3); }
+  .v { color: #ffb86c; }
+  .p { color: var(--muted); }
+  .c { color: var(--accent); }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 24px;
+  }
+
+  .stat {
+    background: var(--surface2);
+    padding: 20px 16px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 100px 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 60px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(32px, 4vw, 48px);
+    letter-spacing: -1.5px;
+    margin-bottom: 60px;
+    line-height: 1.1;
+  }
+
+  .section-title em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--accent3);
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+
+  .skill-card:hover { border-color: rgba(124,106,255,0.3); transform: translateY(-4px); box-shadow: var(--glow); }
+  .skill-card:hover::after { transform: scaleX(1); }
+
+  .skill-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+
+  .skill-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    background: rgba(124,106,255,0.08);
+    border: 1px solid rgba(124,106,255,0.15);
+    color: var(--muted);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+  }
+
+  /* EXPERIENCE */
+  .exp-timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .exp-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, var(--accent), transparent);
+  }
+
+  .exp-item {
+    position: relative;
+    margin-bottom: 60px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .exp-dot {
+    position: absolute;
+    left: -36px;
+    top: 6px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .exp-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .exp-company {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--text);
+  }
+
+  .exp-role {
+    font-size: 13px;
+    color: var(--accent3);
+    background: rgba(106,255,212,0.08);
+    border: 1px solid rgba(106,255,212,0.15);
+    padding: 3px 12px;
+    border-radius: 100px;
+  }
+
+  .exp-date {
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: auto;
+    letter-spacing: 0.5px;
+  }
+
+  .exp-achievements {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .exp-achievements li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .exp-achievements li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  /* CONTACT */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.25s;
+  }
+
+  .contact-item:hover {
+    border-color: var(--accent);
+    transform: translateX(8px);
+    box-shadow: -4px 0 20px rgba(124,106,255,0.1);
+  }
+
+  .contact-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(124,106,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .contact-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .contact-value {
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .cert-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cert-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent3), var(--accent));
+  }
+
+  .cert-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .cert-sub {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 60px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-text {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .footer-text span { color: var(--accent); }
+
+  /* GLOW ORB */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .orb-1 {
+    width: 500px;
+    height: 500px;
+    background: rgba(124,106,255,0.06);
+    top: -200px;
+    right: -100px;
+  }
+
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: rgba(106,255,212,0.04);
+    bottom: 10%;
+    left: -150px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+    section { padding: 60px 24px; }
+    .exp-achievements { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    footer { padding: 32px 24px; flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">KT<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="about">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge">Available for opportunities</div>
+      <h1 class="hero-name">
+        Krishna Teja
+        <span class="highlight">Chippada</span>
+      </h1>
+      <p class="hero-title">ServiceNow Administrator & Developer</p>
+      <p class="hero-desc">
+        3 years of hands-on ServiceNow expertise — building custom applications,
+        automating workflows, and integrating enterprise systems. Based in Bangalore,
+        India. Turning business requirements into elegant platform solutions.
+      </p>
+      <div class="hero-cta">
+        <a href="#experience" class="btn btn-primary">View Experience →</a>
+        <a href="#contact" class="btn btn-outline">Get in Touch</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div class="code-line"><span class="line-num">1</span><span class="code-text"><span class="k">const</span> <span class="v">developer</span> <span class="p">= {</span></span></div>
+        <div class="code-line"><span class="line-num">2</span><span class="code-text">&nbsp;&nbsp;<span class="c">name</span><span class="p">:</span> <span class="s">"Krishna Teja"</span><span class="p">,</span></span></div>
+        <div class="code-line"><span class="line-num">3</span><span class="code-text">&nbsp;&nbsp;<span class="c">role</span><span class="p">:</span> <span class="s">"ServiceNow Dev"</span><span class="p">,</span></span></div>
+        <div class="code-line"><span class="line-num">4</span><span class="code-text">&nbsp;&nbsp;<span class="c">exp</span><span class="p">:</span> <span class="v">3</span><span class="p">,</span> <span class="p">// years</span></span></div>
+        <div class="code-line"><span class="line-num">5</span><span class="code-text">&nbsp;&nbsp;<span class="c">skills</span><span class="p">: [</span></span></div>
+        <div class="code-line"><span class="line-num">6</span><span class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"ITSM"</span><span class="p">,</span> <span class="s">"Glide API"</span><span class="p">,</span></span></div>
+        <div class="code-line"><span class="line-num">7</span><span class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"Flow Designer"</span><span class="p">,</span></span></div>
+        <div class="code-line"><span class="line-num">8</span><span class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"REST/SOAP"</span></span></div>
+        <div class="code-line"><span class="line-num">9</span><span class="code-text">&nbsp;&nbsp;<span class="p">],</span></span></div>
+        <div class="code-line"><span class="line-num">10</span><span class="code-text">&nbsp;&nbsp;<span class="c">location</span><span class="p">:</span> <span class="s">"Bangalore 🇮🇳"</span></span></div>
+        <div class="code-line"><span class="line-num">11</span><span class="code-text"><span class="p">}</span></span></div>
+
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-num">3+</span>
+            <span class="stat-label">Years Exp</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">5</span>
+            <span class="stat-label">ITSM Modules</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">∞</span>
+            <span class="stat-label">Automations</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-inner">
+    <div class="section-label">Technical Expertise</div>
+    <h2 class="section-title">What I <em>build</em> with</h2>
+
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-icon">⚙️</div>
+        <div class="skill-name">ServiceNow Modules</div>
+        <div class="skill-tags">
+          <span class="tag">Incident Mgmt</span>
+          <span class="tag">Problem Mgmt</span>
+          <span class="tag">Change Mgmt</span>
+          <span class="tag">Knowledge Base</span>
+          <span class="tag">Service Catalog</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-icon">💻</div>
+        <div class="skill-name">Scripting & Development</div>
+        <div class="skill-tags">
+          <span class="tag">JavaScript</span>
+          <span class="tag">Glide API</span>
+          <span class="tag">Script Includes</span>
+          <span class="tag">Client Scripts</span>
+          <span class="tag">Business Rules</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-icon">🔧</div>
+        <div class="skill-name">Platform Administration</div>
+        <div class="skill-tags">
+          <span class="tag">User/Group Mgmt</span>
+          <span class="tag">ACLs</span>
+          <span class="tag">Update Sets</span>
+          <span class="tag">Data Imports</span>
+          <span class="tag">Instance Cloning</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-icon">🔄</div>
+        <div class="skill-name">Automation & Workflow</div>
+        <div class="skill-tags">
+          <span class="tag">Flow Designer</span>
+          <span class="tag">Workflow Editor</span>
+          <span class="tag">Execution Plans</span>
+          <span class="tag">Import Sets</span>
+          <span class="tag">Transform Maps</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-icon">🔗</div>
+        <div class="skill-name">Integrations</div>
+        <div class="skill-tags">
+          <span class="tag">REST APIs</span>
+          <span class="tag">SOAP APIs</span>
+          <span class="tag">Inbound Email</span>
+          <span class="tag">Postman</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-icon">📊</div>
+        <div class="skill-name">Reporting & Analytics</div>
+        <div class="skill-tags">
+          <span class="tag">Performance Analytics</span>
+          <span class="tag">Dashboards</span>
+          <span class="tag">Scheduled Reports</span>
+          <span class="tag">UI Builder</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-inner">
+    <div class="section-label">Work History</div>
+    <h2 class="section-title">Where I've <em>worked</em></h2>
+
+    <div class="exp-timeline">
+      <div class="exp-item">
+        <div class="exp-dot"></div>
+        <div class="exp-meta">
+          <span class="exp-company">Tata Consultancy Services</span>
+          <span class="exp-role">ServiceNow Admin & Developer</span>
+          <span class="exp-date">May 2022 – July 2025</span>
+        </div>
+        <p style="color: var(--muted); font-size: 13px; margin-bottom: 4px;">Bangalore, India</p>
+
+        <ul class="exp-achievements">
+          <li>Built a custom application in agent workspace using UI Builder with fully developed homepage and list pages</li>
+          <li>Configured global search across customized tables in the agent workspace</li>
+          <li>Created UI Actions, client scripts, and UI policies tailored to project requirements</li>
+          <li>Developed server-side scripts including business rules and script includes</li>
+          <li>Proficient in notifications, email scripts, Flow Designer, ACLs, and inbound email actions</li>
+          <li>Implemented ACLs, Catalog Client Scripts, and Catalog UI Policies per user requirements</li>
+          <li>Leveraged GlideRecord to retrieve and update data across complex business scenarios</li>
+          <li>Produced Workflows, Reports, and Dashboards to enhance operational efficiency</li>
+          <li>Orchestrated execution plans for Service Catalog items within the platform</li>
+          <li>Leveraged Import Sets and Transform Maps for seamless data migration into ServiceNow</li>
+          <li>Managed users, groups, and roles across the platform</li>
+          <li>Handled Instance Cloning and collaborated with cross-functional teams on automated solutions</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION & CERT -->
+<section>
+  <div class="section-inner">
+    <div class="section-label">Background</div>
+    <h2 class="section-title">Education & <em>Training</em></h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+      <div class="cert-card">
+        <div class="cert-title">🎓 B.Tech in Engineering</div>
+        <div class="cert-sub" style="color: var(--accent3); margin: 8px 0;">Bharath Institute of Higher Education & Research</div>
+        <div class="cert-sub">Chennai &nbsp;·&nbsp; 2017 – 2021</div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-title">📋 TCS ServiceNow Training</div>
+        <div class="cert-sub" style="color: var(--accent3); margin: 8px 0;">Mandatory + Specialist Tracks Completed</div>
+        <div class="cert-sub">Tata Consultancy Services internal certification program</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="section-title">Let's <em>connect</em></h2>
+
+    <div class="contact-grid">
+      <div class="contact-info">
+        <a href="mailto:krishnateja.kt84@gmail.com" class="contact-item">
+          <div class="contact-icon">✉️</div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-value">krishnateja.kt84@gmail.com</div>
+          </div>
+        </a>
+
+        <a href="tel:+918142159528" class="contact-item">
+          <div class="contact-icon">📱</div>
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-value">+91 81421 59528</div>
+          </div>
+        </a>
+
+        <a href="https://linkedin.com/in/krishna-teja-chippada-2ba737146" target="_blank" class="contact-item">
+          <div class="contact-icon">💼</div>
+          <div>
+            <div class="contact-label">LinkedIn</div>
+            <div class="contact-value">krishna-teja-chippada</div>
+          </div>
+        </a>
+
+        <div class="contact-item" style="cursor: default;">
+          <div class="contact-icon">📍</div>
+          <div>
+            <div class="contact-label">Location</div>
+            <div class="contact-value">Bangalore, India</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; display: flex; flex-direction: column; justify-content: center;">
+        <div style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; margin-bottom: 16px;">Open to new roles</div>
+        <p style="color: var(--muted); font-size: 13px; line-height: 1.8; margin-bottom: 28px;">
+          I'm actively looking for ServiceNow Developer or Administrator opportunities.
+          If you're looking for someone who can hit the ground running on platform
+          customization, workflow automation, and ITSM implementation — let's talk.
+        </p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <span class="tag" style="font-size: 12px; padding: 6px 14px;">Full-time</span>
+          <span class="tag" style="font-size: 12px; padding: 6px 14px;">Contract</span>
+          <span class="tag" style="font-size: 12px; padding: 6px 14px;">Remote / Hybrid</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-text">Designed & built for <span>Krishna Teja Chippada</span></div>
+  <div class="footer-text">Bangalore, India · <span>2025</span></div>
+</footer>
+
+<script>
+  // Scroll-triggered fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.skill-card, .exp-item, .cert-card, .contact-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
